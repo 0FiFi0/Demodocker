@@ -1,11 +1,12 @@
-# Użycie obrazu JDK jako bazowego
-FROM openjdk:17-jdk-slim
+# Kontener z mavenem, który umożliwi zbudowanie aplikacji
+FROM maven:3.8.8-eclipse-temurin-17 AS build
 
-# Ustaw zmienną środowiskową dla Javy
-ENV JAVA_OPTS=""
+# Ustawianie workdira w kontenerze
+WORKDIR /app
 
-# Skopiuj plik JAR do kontenera
-COPY target/demoDockerCompose-0.0.1-SNAPSHOT.jar app.jar
+# Kopiowanie poma i plików projektu do kontenera
+COPY pom.xml .
+COPY src ./src
 
-# Uruchom aplikację
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app.jar"]
+# Budowanie aplikacji (dla naszych celów możemy pominąć testy)
+RUN mvn clean package -DskipTests
